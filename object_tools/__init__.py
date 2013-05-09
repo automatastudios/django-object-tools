@@ -1,5 +1,5 @@
-# from object_tools.options import ObjectTool
-# from object_tools.sites import tools
+from object_tools.options import ObjectTool
+from object_tools.sites import tools
 
 
 def autodiscover():
