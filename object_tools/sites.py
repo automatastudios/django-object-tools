@@ -49,17 +49,19 @@ class ObjectTools(object):
         for model in models:
             if model._meta.abstract:
                 raise ImproperlyConfigured('The model %s is abstract, so it \
-                        cannot be registered with object tools.' % \
-                        model.__name__)
+                        cannot be registered with object tools.' % model.__name__)
 
             # Instantiate the object_tools class to save in the registry
-            if self._registry.has_key(model):
+            if model in self._registry:
                 self._registry[model].append(object_tool_class(model))
             else:
                 self._registry[model] = [object_tool_class(model), ]
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url, include
+        try:
+            from django.conf.urls import patterns, url, include
+        except ImportError:  # django < 1.4
+            from django.conf.urls.defaults import patterns, url, include
 
         urlpatterns = patterns('',)
 
@@ -67,10 +69,9 @@ class ObjectTools(object):
         for model, object_tools in self._registry.iteritems():
             for object_tool in object_tools:
                 urlpatterns += patterns('',
-                    url(r'^%s/%s/' % (model._meta.app_label, \
-                            model._meta.module_name),
-                        include(object_tool.urls))
-                )
+                                        url(r'^%s/%s/' % (model._meta.app_label,
+                                        model._meta.module_name),
+                                        include(object_tool.urls)))
 
         return urlpatterns
 

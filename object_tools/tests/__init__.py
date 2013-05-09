@@ -23,8 +23,8 @@ class MockRequest():
 class InitTestCase(TestCase):
     def test_autodiscover(self):
         autodiscover()
-        self.failUnless('object_tools.tests.tools' in sys.modules.keys(), \
-                'Autodiscover should import tool modules from installed apps.')
+        self.failUnless('object_tools.tests.tools' in sys.modules.keys(),
+                        'Autodiscover should import tool modules from installed apps.')
 
 
 class ValidateTestCase(TestCase):
@@ -33,35 +33,34 @@ class ValidateTestCase(TestCase):
     """
     def test_validation(self):
         # Fail without 'name' member.
-        self.failUnlessRaises(ImproperlyConfigured, validate, \
-                TestInvalidTool, User)
+        self.failUnlessRaises(ImproperlyConfigured, validate,
+                              TestInvalidTool, User)
         try:
             validate(TestInvalidTool, User)
         except ImproperlyConfigured, e:
-            self.failUnlessEqual(e.message, \
-                    "No 'name' attribute found for tool TestInvalidTool.")
+            self.failUnlessEqual(e.message,
+                                 "No 'name' attribute found for tool TestInvalidTool.")
 
         TestInvalidTool.name = 'test_invalid_tool'
 
         # Fail without 'label' member.
-        self.failUnlessRaises(ImproperlyConfigured, validate, \
-                TestInvalidTool, User)
+        self.failUnlessRaises(ImproperlyConfigured, validate,
+                              TestInvalidTool, User)
         try:
             validate(TestInvalidTool, User)
         except ImproperlyConfigured, e:
-            self.failUnlessEqual(e.message, \
-                    "No 'label' attribute found for tool TestInvalidTool.")
+            self.failUnlessEqual(e.message,
+                                 "No 'label' attribute found for tool TestInvalidTool.")
 
         TestInvalidTool.label = 'Test Invalid Tool'
 
         # Fail without 'view' member.
-        self.failUnlessRaises(NotImplementedError, validate, TestInvalidTool, \
-                User)
+        self.failUnlessRaises(NotImplementedError, validate, TestInvalidTool, User)
         try:
             validate(TestInvalidTool, User)
         except NotImplementedError, e:
-            self.failUnlessEqual(e.message, \
-                    "'view' method not implemented for tool TestInvalidTool.")
+            self.failUnlessEqual(e.message,
+                                 "'view' method not implemented for tool TestInvalidTool.")
 
 
 class ObjectToolsInclusionTagsTestCase(TestCase):
@@ -132,23 +131,22 @@ class ObjectToolsTestCase(TestCase):
         self.failUnlessEqual(len(urls[0]), 8)
         for url in urls[0]:
             self.failUnless(url.__repr__() in [
-            '<RegexURLResolver [<RegexURLPattern auth_message_test_tool \
+                '<RegexURLResolver [<RegexURLPattern auth_message_test_tool \
 ^test_tool/$>] (None:None) ^auth/message/>',
-            '<RegexURLResolver [<RegexURLPattern auth_group_test_tool \
+                '<RegexURLResolver [<RegexURLPattern auth_group_test_tool \
 ^test_tool/$>] (None:None) ^auth/group/>',
-            '<RegexURLResolver [<RegexURLPattern contenttypes_contenttype\
+                '<RegexURLResolver [<RegexURLPattern contenttypes_contenttype\
 _test_tool ^test_tool/$>] (None:None) ^contenttypes/contenttype/>',
-            '<RegexURLResolver [<RegexURLPattern sites_site_test_tool \
+                '<RegexURLResolver [<RegexURLPattern sites_site_test_tool \
 ^test_tool/$>] (None:None) ^sites/site/>',
-            '<RegexURLResolver [<RegexURLPattern auth_permission_test_tool \
+                '<RegexURLResolver [<RegexURLPattern auth_permission_test_tool \
 ^test_tool/$>] (None:None) ^auth/permission/>',
-            '<RegexURLResolver [<RegexURLPattern auth_user_test_tool \
+                '<RegexURLResolver [<RegexURLPattern auth_user_test_tool \
 ^test_tool/$>] (None:None) ^auth/user/>',
-            '<RegexURLResolver [<RegexURLPattern sessions_session_test_tool \
+                '<RegexURLResolver [<RegexURLPattern sessions_session_test_tool \
 ^test_tool/$>] (None:None) ^sessions/session/>',
-            '<RegexURLResolver [<RegexURLPattern admin_logentry_test_tool \
-^test_tool/$>] (None:None) ^admin/logentry/>'
-        ])
+                '<RegexURLResolver [<RegexURLPattern admin_logentry_test_tool \
+^test_tool/$>] (None:None) ^admin/logentry/>'])
 
 
 class ObjectToolTestCase(TestCase):
@@ -180,14 +178,12 @@ class ObjectToolTestCase(TestCase):
         media = tool.media(form)
 
         #Media result should include default admin media.
-        self.failUnlessEqual(media.render_js(), [u'<script type="\
-text/javascript" src="/static/admin/js/core.js"></script>', \
-u'<script type="text/javascript" src="/static/admin/js/admin/\
-RelatedObjectLookups.js"></script>', u'<script type=\
-"text/javascript" src="/static/admin/js/jquery.min.js">\
-</script>', u'<script type="text/javascript" src=\
-"/static/admin/js/jquery.init.js"></script>'], \
-'Media result should include default admin media.')
+        self.failUnlessEqual(media.render_js(), [
+            u'<script type="text/javascript" src="/static/admin/js/core.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>'],
+            'Media result should include default admin media.')
 
         tool = TestMediaTool(User)
         form = tool.construct_form(MockRequest())
@@ -195,18 +191,12 @@ RelatedObjectLookups.js"></script>', u'<script type=\
 
         #Media result should also include field specific media.
         self.failUnlessEqual(media.render_js(), [
-            u'<script type="text/javascript" src="/static/admin/js/\
-core.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
-admin/RelatedObjectLookups.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
-jquery.min.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
-jquery.init.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
-calendar.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
-admin/DateTimeShortcuts.js"></script>'
+            u'<script type="text/javascript" src="/static/admin/js/core.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/calendar.js"></script>',
+            u'<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>'
         ])
 
     def test_reverse(self):
@@ -216,9 +206,8 @@ test_tool/', "Tool url reverse should reverse similar to \
 how admin does, except pointing to the particular tool.")
 
         tool = TestMediaTool(User)
-        self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/\
-test_media_tool/', "Tool url reverse should reverse similar \
-to how admin does, except pointing to the particular tool.")
+        self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/test_media_tool/',
+                             "Tool url reverse should reverse similar to how admin does, except pointing to the particular tool.")
 
     def test_urls(self):
         tool = TestTool(User)
@@ -226,10 +215,9 @@ to how admin does, except pointing to the particular tool.")
         self.failUnlessEqual(len(urls), 1, 'urls property should only \
                 return 1 url')
         self.failUnlessEqual(urls[0].__repr__(),
-            '<RegexURLPattern auth_user_test_tool ^test_tool/$>')
+                             '<RegexURLPattern auth_user_test_tool ^test_tool/$>')
         self.failUnlessEqual(urls[0].name, 'auth_user_test_tool',
-            'URL should be named as "<app_label>_<module_name>_<tool_name>\
-                ".')
+                             'URL should be named as "<app_label>_<module_name>_<tool_name>".')
 
     def test_view(self):
         # Should raise permission denied on anonymous user.

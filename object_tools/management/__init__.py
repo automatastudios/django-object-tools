@@ -12,8 +12,8 @@ def _get_all_permissions(opts, tools):
     "Returns (codename, name) for all tools."
     perms = []
     for tool in tools:
-        perms.append((_get_permission_codename(tool, opts), u'Can %s %s' % \
-                (tool.name, opts.verbose_name_plural)))
+        perms.append((_get_permission_codename(tool, opts), u'Can %s %s' %
+                     (tool.name, opts.verbose_name_plural)))
     return perms
 
 
@@ -59,4 +59,4 @@ def create_permissions(app, created_models, verbosity, **kwargs):
             print "Adding permission '%s'" % p
 
 signals.post_syncdb.connect(create_permissions,
-    dispatch_uid="object_tools.management.create_permissions")
+                            dispatch_uid="object_tools.management.create_permissions")

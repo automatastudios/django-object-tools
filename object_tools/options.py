@@ -1,6 +1,11 @@
 from django import forms
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url
+
+try:
+    from django.conf.urls import patterns, url
+except ImportError:  # django < 1.4
+    from django.conf.urls.defaults import patterns, url
+
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -55,8 +60,8 @@ class ObjectTool(object):
         Returns True if the given request has permission to use the tool.
         Can be overriden by the user in subclasses.
         """
-        return user.has_perm(self.model._meta.app_label + '.' + \
-                self.get_permission())
+        return user.has_perm(self.model._meta.app_label + '.' +
+                             self.get_permission())
 
     def media(self, form):
         """
@@ -66,7 +71,7 @@ class ObjectTool(object):
               'admin/js/jquery.min.js', 'admin/js/jquery.init.js']
 
         media = forms.Media(
-            js=['%s%s' % (settings.STATIC_URL, url) for url in js],
+            js=['%s%s' % (settings.STATIC_URL, js_url) for js_url in js],
         )
 
         if form:
@@ -77,7 +82,7 @@ class ObjectTool(object):
 
     def reverse(self):
         info = self.model._meta.app_label, self.model._meta.module_name, \
-                self.name
+            self.name
         return reverse('object-tools:%s_%s_%s' % info)
 
     def _urls(self):
@@ -85,12 +90,11 @@ class ObjectTool(object):
         URL patterns for tool linked to _view method.
         """
         info = self.model._meta.app_label, self.model._meta.module_name, \
-                self.name
+            self.name
         urlpatterns = patterns('',
-            url(r'^%s/$' % self.name,
-                self._view,
-                name='%s_%s_%s' % info),
-        )
+                               url(r'^%s/$' % self.name,
+                               self._view,
+                               name='%s_%s_%s' % info),)
         return urlpatterns
     urls = property(_urls)
 
@@ -112,8 +116,8 @@ class ObjectTool(object):
             'app_label': app_label,
             'media': media,
             'form': form,
-            'changelist_url': reverse('admin:%s_%s_changelist' % \
-                    (app_label, object_name))
+            'changelist_url': reverse('admin:%s_%s_changelist' %
+                                      (app_label, object_name))
         }
 
         # Pass along fieldset if sepcififed.
